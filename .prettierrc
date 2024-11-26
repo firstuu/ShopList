@@ -1,0 +1,10 @@
+{
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "singleQuote": true,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "printWidth": 260,
+  "importOrderCaseInsensitive": false,
+  "plugins": ["prettier-plugin-tailwindcss", "./node_modules/prettier-plugin-sort-imports/dist/index.js"]
+}
