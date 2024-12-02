@@ -1,4 +1,5 @@
 import { Luckiest_Guy } from 'next/font/google';
+import Navbar from './components/navbar';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${LuckiestGuy.className} antialiased`}>{children}</body>
+      <body className={`${LuckiestGuy.className} h-dvh max-h-dvh antialiased`}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
