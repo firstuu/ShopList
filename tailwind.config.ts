@@ -10,7 +10,7 @@ export default {
         background: '#F5F5F5',
         'accent-green': '#52B788',
         'accent-blue': '#3B82F6',
-        'accent-red': 'E63946',
+        'accent-red': '#E63946',
       },
       maxWidth: {
         '8xl': '1440px',
