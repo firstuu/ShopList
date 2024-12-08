@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://user:password@localhost:5432/shopping_list_db?schema=public"
+}
+
+model ShoppingList {
+  id        Int      @id @default(autoincrement())
+  name      String
+  items     Item[] // Relacja jeden-do-wielu (jedna lista, wiele przedmiotów)
+  createdAt DateTime @default(now())
+}
+
+model Item {
+  id        Int          @id @default(autoincrement())
+  name      String
+  status    Boolean      @default(false)
+  listId    Int // Klucz obcy do ShoppingList
+  list      ShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+}

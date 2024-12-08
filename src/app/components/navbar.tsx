@@ -2,11 +2,20 @@
 import HamburgerOpenIcon from '../assets/hamburger.svg';
 import ShopListSidebar from './shop-list-sidebar';
 import CloseMenuIcon from '../assets/close.svg';
+import type { ShoppingList } from '@/lib/db';
 import NoteIcon from '../assets/note.svg';
-import { shopListData } from '../page';
 import { useState } from 'react';
 import Image from 'next/image';
-export default function Navbar({ shopLists, setCurrentShopList, currentShopList }: { shopLists: shopListData[]; setCurrentShopList: (list: shopListData) => void; currentShopList: shopListData }) {
+
+type NavbarProps = {
+  shopLists: ShoppingList[] | null;
+  setActiveShopListId: (id: number) => void;
+  activeShopListId: number | undefined;
+  handleAddList: () => void;
+  handleDeleteList: (id: number) => void;
+};
+
+export default function Navbar({ shopLists, setActiveShopListId, activeShopListId, handleAddList, handleDeleteList }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleOpenMenu = () => {
     setMenuOpen(!menuOpen);
@@ -25,7 +34,7 @@ export default function Navbar({ shopLists, setCurrentShopList, currentShopList 
       </div>
 
       <div className={`${menuOpen ? 'translate-x-0' : 'translate-x-[-100%]'} absolute z-10 h-[calc(100dvh_-_60px)] w-full bg-white px-[25px] py-[20px] transition-all duration-300 ease-in`}>
-        <ShopListSidebar shopLists={shopLists} setCurrentShopList={setCurrentShopList} currentShopList={currentShopList} setMenuOpen={setMenuOpen} />
+        <ShopListSidebar shopLists={shopLists} setMenuOpen={setMenuOpen} activeShopListId={activeShopListId} setActiveShopListId={setActiveShopListId} handleAddList={handleAddList} handleDeleteList={handleDeleteList} />
       </div>
     </>
   );
