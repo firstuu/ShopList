@@ -1,6 +1,7 @@
 import TrashIcon from '../assets/trash.svg';
 import { ShoppingList } from '@/lib/db';
 import { useEffect } from 'react';
+import Cookies from 'js-cookie';
 import Image from 'next/image';
 
 type ShopListSidebarProps = {
@@ -32,6 +33,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                   onClick={async () => {
                     setMenuOpen?.(false);
                     setActiveShopListId(shopList.id);
+                    Cookies.set('last-active-shopping-list', shopList.id.toString());
                   }}
                   className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl lg:text-2xl`}
                   key={shopList.id}

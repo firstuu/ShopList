@@ -5,19 +5,21 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Item, ShoppingList } from '@/lib/db';
 import ShopList from '../shop-list';
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 import Navbar from '../navbar';
 
 type ShopListProps = {
   shopLists: ShoppingList[];
   firstFetchedShopListItems: Item[];
+  fetchedActiveShopListId: number;
 };
 
-export default function ShopListPage({ shopLists, firstFetchedShopListItems }: ShopListProps) {
+export default function ShopListPage({ shopLists, firstFetchedShopListItems, fetchedActiveShopListId }: ShopListProps) {
   const [currentShopListItems, setCurrentShopListItems] = useState(firstFetchedShopListItems);
   const [currentShopLists, setCurrentShopLists] = useState(shopLists);
-  const [activeShopListId, setActiveShopListId] = useState<number | undefined>(firstFetchedShopListItems && shopLists.length > 0 ? shopLists[0].id : undefined);
-  const [isToastAddDismissed, setIsToastAddDismissed] = useState(false);
-  const [isToastDeleteDismissed, setIsToastDeleteDismissed] = useState(false);
+  const [activeShopListId, setActiveShopListId] = useState<number | undefined>(fetchedActiveShopListId);
+  const [isToastAddDismissed, setIsToastAddDismissed] = useState(Cookies.get('toast-add-dismissed') ? true : false);
+  const [isToastDeleteDismissed, setIsToastDeleteDismissed] = useState(Cookies.get('toast-delete-dismissed') ? true : false);
 
   const handleAddItem = async () => {
     try {
@@ -36,6 +38,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems }: S
                   className="rounded-[16px] bg-accent-blue px-3 pb-1 pt-2 text-white"
                   onClick={() => {
                     toast.dismiss(t.id);
+                    Cookies.set('toast-add-dismissed', '1');
                     setIsToastAddDismissed(true);
                   }}
                 >
@@ -70,6 +73,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems }: S
                 onClick={() => {
                   toast.dismiss(t.id);
                   setIsToastAddDismissed(true);
+                  Cookies.set('toast-add-dismissed', '1');
                 }}
               >
                 Zrozumiano!
@@ -125,6 +129,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems }: S
               className="w-full rounded-[16px] bg-accent-red px-3 pb-1 pt-2 text-center text-white"
               onClick={async () => {
                 toast.dismiss(t.id);
+                Cookies.set('toast-delete-dismissed', '1');
                 setIsToastDeleteDismissed(true);
                 const deletedList = await deleteList(id);
                 if (deletedList) {
@@ -197,6 +202,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems }: S
               className="w-full rounded-[16px] bg-accent-red px-3 pb-1 pt-2 text-center text-white"
               onClick={async () => {
                 toast.dismiss(t.id);
+                Cookies.set('toast-delete-dismissed', '1');
                 setIsToastDeleteDismissed(true);
                 const deletedList = await deleteListItem(id);
                 if (deletedList) {
@@ -211,6 +217,12 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems }: S
         ),
         { id: 'delete-list' },
       );
+    } else {
+      const deletedList = await deleteListItem(id);
+      if (deletedList) {
+        setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
+        toast.success('pomyślnie usunięto przedmiot');
+      } else toast.error('coś poszło nie tak');
     }
   };
 

@@ -15,7 +15,7 @@ export const fetchShopLists = async (): Promise<ShoppingList[]> => {
   }
 };
 
-export const fetchFirstFetchedShopListItems = async (listId: number): Promise<Item[]> => {
+export const fetchLastActiveShopListItems = async (listId: number): Promise<Item[]> => {
   try {
     return await prisma.item.findMany({
       where: {
