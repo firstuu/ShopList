@@ -57,13 +57,6 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteList(shopList.id);
-                      if (shopList.id === activeShopListId && shopLists.length > 0) {
-                        const currentIndex = shopLists.findIndex((list) => list.id === shopList.id);
-                        const previousIndex = currentIndex > 0 ? currentIndex - 1 : 0;
-                        if (previousIndex) {
-                          setActiveShopListId(shopLists[previousIndex].id);
-                        } else setActiveShopListId(-1);
-                      }
                     }}
                   />
                 </li>

@@ -1,4 +1,5 @@
 import { fetchCurrentListItems } from '@/actions/actions';
+import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 import ItemBar from './item-bar';
 import { Item } from '@/lib/db';
@@ -17,8 +18,13 @@ type ShopListProps = {
 export default function ShopList({ currentShopListItems, handleAddItem, handleDeleteItem, handleChangeStatusItem, shopListName, setCurrentShopListItems, activeShopListId, handleUpdateItemName }: ShopListProps) {
   useEffect(() => {
     const fetch = async () => {
-      const items = await fetchCurrentListItems(activeShopListId);
-      setCurrentShopListItems(items);
+      try {
+        const items = await fetchCurrentListItems(activeShopListId);
+        setCurrentShopListItems(items);
+      } catch (e) {
+        console.log(`Nie udało sie pobrać przedmiotów dla ${activeShopListId}`, e);
+        toast.error('Wystąpił problem z pobraniem danych akutalnej listy');
+      }
     };
     if (!activeShopListId) setCurrentShopListItems([]);
     fetch();
