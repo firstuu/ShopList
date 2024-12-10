@@ -23,7 +23,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
 
   const handleAddItem = async () => {
     try {
-      const newItem = await addListItem('New list', activeShopListId);
+      const newItem = await addListItem(activeShopListId);
       if (newItem) {
         setCurrentShopListItems((prevItems) => [...prevItems, newItem]);
         toast.success('dodano przedmiot!', { id: 'add-item' });
@@ -104,10 +104,10 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
                     setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
                     toast.success('pomyślnie usunięto listę');
                     const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-                    const previousIndex = currentIndex > 0 ? currentIndex - 1 : 0;
-                    if (previousIndex) {
+                    const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
+                    if (previousIndex >= 0 && activeShopListId !== deletedList.id) {
                       setActiveShopListId(currentShopLists[previousIndex].id);
-                    } else {
+                    } else if (previousIndex < 0) {
                       setActiveShopListId(-1);
                     }
                   } else toast.error('coś poszło nie tak');
@@ -136,10 +136,10 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
                   setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
                   toast.success('pomyślnie usunięto listę');
                   const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-                  const previousIndex = currentIndex > 0 ? currentIndex - 1 : 0;
-                  if (previousIndex) {
+                  const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
+                  if (previousIndex >= 0 && activeShopListId !== deletedList.id) {
                     setActiveShopListId(currentShopLists[previousIndex].id);
-                  } else {
+                  } else if (previousIndex < 0) {
                     setActiveShopListId(-1);
                   }
                 } else toast.error('coś poszło nie tak');
@@ -156,11 +156,12 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
       if (deletedList) {
         setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
         const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-        const previousIndex = currentIndex > 0 ? currentIndex - 1 : 0;
-        if (previousIndex >= 0) {
+        const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
+
+        if (previousIndex >= 0 && activeShopListId === deletedList.id) {
           setActiveShopListId(currentShopLists[previousIndex].id);
-        } else {
-          setActiveShopListId(undefined);
+        } else if (previousIndex < 0) {
+          setActiveShopListId(-1);
         }
       }
     }

@@ -22,11 +22,11 @@ export default function ShopList({ currentShopListItems, handleAddItem, handleDe
         const items = await fetchCurrentListItems(activeShopListId);
         setCurrentShopListItems(items);
       } catch (e) {
-        console.log(`Nie udało sie pobrać przedmiotów dla ${activeShopListId}`, e);
+        console.error(`Nie udało sie pobrać przedmiotów dla ${activeShopListId}`, e);
         toast.error('Wystąpił problem z pobraniem danych akutalnej listy');
       }
     };
-    if (!activeShopListId) setCurrentShopListItems([]);
+    if (!activeShopListId || activeShopListId < 0) setCurrentShopListItems([]);
     fetch();
   }, [activeShopListId, setCurrentShopListItems]);
 

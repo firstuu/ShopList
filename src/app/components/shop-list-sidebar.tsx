@@ -21,11 +21,15 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
     }
   }, [activeShopListId, setActiveShopListId, shopLists]);
 
+  useEffect(() => {
+    if (activeShopListId) Cookies.set('last-active-shopping-list', activeShopListId.toString());
+  }, [activeShopListId]);
+
   return (
     <div className="mx-auto h-full w-full rounded-[26px] bg-secondary py-[30px] shadow-md lg:min-w-[344px] lg:max-w-[344px] lg:py-[40px]">
       <h2 className="text-center text-2xl lg:text-3xl">Listy zakupowe</h2>
       <div className="flex h-full flex-col items-center justify-between">
-        <ul className="w-full space-y-[20px] px-[25px] pt-[45px]">
+        <ul className="my-[45px] flex w-full flex-grow flex-col space-y-[20px] overflow-y-scroll px-[25px]">
           {shopLists && shopLists.length > 0 ? (
             shopLists.map((shopList) => {
               return (
@@ -33,7 +37,6 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                   onClick={async () => {
                     setMenuOpen?.(false);
                     setActiveShopListId(shopList.id);
-                    Cookies.set('last-active-shopping-list', shopList.id.toString());
                   }}
                   className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl lg:text-2xl`}
                   key={shopList.id}
