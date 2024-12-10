@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://user:password@localhost:5432/shopping_list_db?schema=public"
+  url      = env("DATABASE_URL")
 }
 
 model ShoppingList {

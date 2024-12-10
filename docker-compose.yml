@@ -1,13 +1,23 @@
 services:
+  next:
+    container_name: nextJS
+    image: node:20.11.0
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/app'
+    working_dir: '/app'
+    command: sh -c 'npm install --force && npm run dev'
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:latest
-    container_name: my_postgres_db
+    container_name: shopList_DB
     ports:
       - '5432:5432'
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: shopping_list_db
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

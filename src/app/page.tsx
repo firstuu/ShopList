@@ -2,16 +2,21 @@ import { fetchLastActiveShopListItems, fetchShopLists } from '@/actions/actions'
 import ShopListPage from './components/shop-list-panel/shop-list-panel';
 import { cookies } from 'next/headers';
 import { Item } from '@/lib/db';
+import { ShoppingList } from '@prisma/client';
+
+async function getLastActiveShoppingListId(shopListFetched: ShoppingList[]) {
+  const cookiesStore = await cookies();
+  const lastActiveShoppingListCookie = cookiesStore.get('last-active-shopping-list');
+  return lastActiveShoppingListCookie ? 
+    Number(lastActiveShoppingListCookie.value) : 
+    (shopListFetched.length > 0 ? shopListFetched[0].id : -1);
+}
 
 export default async function Home() {
   try {
-    const cookiesStore = await cookies();
     const shopListFetched = await fetchShopLists();
-    const lastActiveShoppingListId = cookiesStore.get('last-active-shopping-list') ? Number(cookiesStore.get('last-active-shopping-list')?.value) : shopListFetched.length > 0 ? shopListFetched[0].id : -1;
-    let lastActiveShoppingListItems: Item[];
-    if (lastActiveShoppingListId > 0) {
-      lastActiveShoppingListItems = await fetchLastActiveShopListItems(lastActiveShoppingListId);
-    } else lastActiveShoppingListItems = [];
+    const lastActiveShoppingListId = await getLastActiveShoppingListId(shopListFetched)
+    const lastActiveShoppingListItems: Item[] = lastActiveShoppingListId > 0 ? await fetchLastActiveShopListItems(lastActiveShoppingListId) : []
     return <ShopListPage shopLists={shopListFetched} firstFetchedShopListItems={lastActiveShoppingListItems} fetchedActiveShopListId={lastActiveShoppingListId} />;
   } catch (error) {
     console.error('Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później:', error);

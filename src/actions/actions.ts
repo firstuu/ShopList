@@ -108,7 +108,6 @@ export const updateItemName = async (name: string, id: number) => {
 
 export const addListItem = async (listId: number | undefined) => {
   try {
-    console.log(listId);
     if (!listId || listId < 0) return;
     const newItem = await prisma.item.create({
       data: {

@@ -29,7 +29,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
     <div className="mx-auto h-full w-full rounded-[26px] bg-secondary py-[30px] shadow-md lg:min-w-[344px] lg:max-w-[344px] lg:py-[40px]">
       <h2 className="text-center text-2xl lg:text-3xl">Listy zakupowe</h2>
       <div className="flex h-full flex-col items-center justify-between">
-        <ul className="my-[45px] flex w-full flex-grow flex-col space-y-[20px] overflow-y-scroll px-[25px]">
+        <ul className="my-[45px]  w-full space-y-[20px] overflow-y-auto  px-[25px]">
           {shopLists && shopLists.length > 0 ? (
             shopLists.map((shopList) => {
               return (
@@ -38,7 +38,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                     setMenuOpen?.(false);
                     setActiveShopListId(shopList.id);
                   }}
-                  className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl lg:text-2xl`}
+                  className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl flex-1 overflow-y-auto whitespace-normal text-wrap break-words lg:text-2xl`}
                   key={shopList.id}
                 >
                   <p

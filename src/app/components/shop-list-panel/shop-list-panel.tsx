@@ -7,12 +7,36 @@ import ShopList from '../shop-list';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 import Navbar from '../navbar';
+import toastCustomAdd from '../toasts-custom/toast-custom-add';
+import toastCustomDelete from '../toasts-custom/toast-custom-delete';
 
 type ShopListProps = {
   shopLists: ShoppingList[];
   firstFetchedShopListItems: Item[];
   fetchedActiveShopListId: number;
 };
+
+export const deleteAndSetActiveList = async (
+  listId: number,
+  currentShopLists: ShoppingList[], 
+  setCurrentShopLists: React.Dispatch<React.SetStateAction<ShoppingList[]>>, 
+  activeShopListId: number | undefined, 
+  setActiveShopListId: React.Dispatch<React.SetStateAction<number | undefined>> 
+): Promise<void> => { 
+    const deletedList = await deleteList(listId);
+    if (deletedList) {
+      setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
+      toast.success('pomyślnie usunięto listę');
+      const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
+      const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
+
+      if (previousIndex >= 0 && activeShopListId === deletedList.id) {
+        setActiveShopListId(currentShopLists[previousIndex].id);
+      } else if (previousIndex < 0) {
+        setActiveShopListId(-1);
+      }
+    } else toast.error('coś poszło nie tak');
+}
 
 export default function ShopListPage({ shopLists, firstFetchedShopListItems, fetchedActiveShopListId }: ShopListProps) {
   const [currentShopListItems, setCurrentShopListItems] = useState(firstFetchedShopListItems);
@@ -28,26 +52,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
         setCurrentShopListItems((prevItems) => [...prevItems, newItem]);
         toast.success('dodano przedmiot!', { id: 'add-item' });
         if (!isToastAddDismissed) {
-          toast(
-            (t) => (
-              <span>
-                <p className="text-lg">
-                  Kliknij <span className="text-accent-green">dwókrotnie</span> na przedmiot aby zmienić nazwę
-                </p>
-                <button
-                  className="rounded-[16px] bg-accent-blue px-3 pb-1 pt-2 text-white"
-                  onClick={() => {
-                    toast.dismiss(t.id);
-                    Cookies.set('toast-add-dismissed', '1');
-                    setIsToastAddDismissed(true);
-                  }}
-                >
-                  Zrozumiano!
-                </button>
-              </span>
-            ),
-            { id: 'add-item-info' },
-          );
+          toastCustomAdd({id: 'add-item-info', setIsToastAddDismissed})
         }
       } else toast.error('Dodaj lub wybierz listę', { id: 'no-listId-error' });
     } catch {
@@ -62,110 +67,19 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
       setActiveShopListId(newList.id);
       toast.success('dodano listę!', { id: 'add-list' });
       if (!isToastAddDismissed) {
-        toast(
-          (t) => (
-            <span>
-              <p className="text-lg">
-                Kliknij <span className="text-accent-green">dwókrotnie</span> na listę aby zmienić nazwę
-              </p>
-              <button
-                className="rounded-[16px] bg-accent-blue px-3 pb-1 pt-2 text-white"
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  setIsToastAddDismissed(true);
-                  Cookies.set('toast-add-dismissed', '1');
-                }}
-              >
-                Zrozumiano!
-              </button>
-            </span>
-          ),
-          { id: 'add-list-info' },
-        );
+        toastCustomAdd({id: 'add-list-info', setIsToastAddDismissed})
       }
     } else toast.error('Coś poszło nie tak', { id: 'add-list-error' });
   };
 
   const handleDeleteList = async (id: number) => {
     if (!isToastDeleteDismissed) {
-      toast(
-        (t) => (
-          <span>
-            <p className="text-lg">
-              Napewno chcesz <span className="text-accent-red">usunąć</span> listę?
-            </p>
-            <div className="mb-[5px] flex items-center gap-[5px]">
-              <button
-                className="w-full rounded-[16px] bg-accent-red px-3 pb-1 pt-2 text-white"
-                onClick={async () => {
-                  toast.dismiss(t.id);
-                  const deletedList = await deleteList(id);
-                  if (deletedList) {
-                    setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
-                    toast.success('pomyślnie usunięto listę');
-                    const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-                    const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
-                    if (previousIndex >= 0 && activeShopListId !== deletedList.id) {
-                      setActiveShopListId(currentShopLists[previousIndex].id);
-                    } else if (previousIndex < 0) {
-                      setActiveShopListId(-1);
-                    }
-                  } else toast.error('coś poszło nie tak');
-                }}
-              >
-                Tak
-              </button>
-
-              <button
-                className="w-full rounded-[16px] bg-accent-green px-3 pb-1 pt-2 text-white"
-                onClick={() => {
-                  toast.dismiss(t.id);
-                }}
-              >
-                Nie
-              </button>
-            </div>
-            <button
-              className="w-full rounded-[16px] bg-accent-red px-3 pb-1 pt-2 text-center text-white"
-              onClick={async () => {
-                toast.dismiss(t.id);
-                Cookies.set('toast-delete-dismissed', '1');
-                setIsToastDeleteDismissed(true);
-                const deletedList = await deleteList(id);
-                if (deletedList) {
-                  setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
-                  toast.success('pomyślnie usunięto listę');
-                  const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-                  const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
-                  if (previousIndex >= 0 && activeShopListId !== deletedList.id) {
-                    setActiveShopListId(currentShopLists[previousIndex].id);
-                  } else if (previousIndex < 0) {
-                    setActiveShopListId(-1);
-                  }
-                } else toast.error('coś poszło nie tak');
-              }}
-            >
-              Tak, nie pytaj ponownie
-            </button>
-          </span>
-        ),
-        { id: 'delete-list' },
-      );
+     toastCustomDelete({toastId:'delete-list-info', listId:id, currentShopLists, setCurrentShopLists, activeShopListId, setActiveShopListId, setIsToastDeleteDismissed} )
     } else {
-      const deletedList = await deleteList(id);
-      if (deletedList) {
-        setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
-        const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
-        const previousIndex = currentIndex >= 0 ? currentIndex - 1 : -1;
-
-        if (previousIndex >= 0 && activeShopListId === deletedList.id) {
-          setActiveShopListId(currentShopLists[previousIndex].id);
-        } else if (previousIndex < 0) {
-          setActiveShopListId(-1);
-        }
-      }
+      deleteAndSetActiveList(id, currentShopLists, setCurrentShopLists, activeShopListId, setActiveShopListId)
     }
   };
+
 
   const handleDeleteItem = async (id: number) => {
     if (!isToastDeleteDismissed) {
@@ -184,6 +98,7 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
                   if (deletedList) {
                     setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
                     toast.success('pomyślnie usunięto przedmiot');
+                    
                   } else toast.error('coś poszło nie tak');
                 }}
               >
@@ -219,9 +134,9 @@ export default function ShopListPage({ shopLists, firstFetchedShopListItems, fet
         { id: 'delete-list' },
       );
     } else {
-      const deletedList = await deleteListItem(id);
-      if (deletedList) {
-        setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
+      const deletedListItem = await deleteListItem(id);
+      if (deletedListItem) {
+        setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedListItem.id));
         toast.success('pomyślnie usunięto przedmiot');
       } else toast.error('coś poszło nie tak');
     }
