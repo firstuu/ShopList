@@ -1,20 +1,17 @@
+'use client';
+import { deleteListWithConfirmation, handleAddList, handleUpdateListName } from '../utils/list-operations';
+import { activeShopListIdAtom, shopListsAtom } from '@/store/atoms/shop-lists';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import TrashIcon from '../assets/trash.svg';
-import { ShoppingList } from '@/lib/db';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 
-type ShopListSidebarProps = {
-  shopLists: ShoppingList[] | null;
-  setMenuOpen?: (boolean: boolean) => void;
-  setActiveShopListId: (id: number) => void;
-  activeShopListId: number | undefined;
-  handleAddList: () => void;
-  handleDeleteList: (id: number) => void;
-  handleUpdateListName: (name: string, id: number) => void;
-};
+export default function ShopListSidebar({ setMenuOpen }: { setMenuOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const [activeShopListId, setActiveShopListId] = useAtom(activeShopListIdAtom);
+  const setCurrentShopLists = useSetAtom(shopListsAtom);
+  const shopLists = useAtomValue(shopListsAtom);
 
-export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopListId, activeShopListId, handleAddList, handleDeleteList, handleUpdateListName }: ShopListSidebarProps) {
   useEffect(() => {
     if (!activeShopListId && shopLists && shopLists.length > 0) {
       setActiveShopListId(shopLists[0].id);
@@ -29,7 +26,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
     <div className="mx-auto h-full w-full rounded-[26px] bg-secondary py-[30px] shadow-md lg:min-w-[344px] lg:max-w-[344px] lg:py-[40px]">
       <h2 className="text-center text-2xl lg:text-3xl">Listy zakupowe</h2>
       <div className="flex h-full flex-col items-center justify-between">
-        <ul className="my-[45px]  w-full space-y-[20px] overflow-y-auto  px-[25px]">
+        <ul className="my-[45px] w-full space-y-[20px] overflow-y-auto px-[25px]">
           {shopLists && shopLists.length > 0 ? (
             shopLists.map((shopList) => {
               return (
@@ -38,7 +35,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                     setMenuOpen?.(false);
                     setActiveShopListId(shopList.id);
                   }}
-                  className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl flex-1 overflow-y-auto whitespace-normal text-wrap break-words lg:text-2xl`}
+                  className={`flex cursor-pointer items-center justify-between gap-[10px] border-2 ${activeShopListId === shopList.id ? 'border-accent-red' : 'border-black'} flex-1 overflow-y-auto whitespace-normal text-wrap break-words bg-accent-blue px-[20px] py-[8px] text-xl text-white shadow-xl lg:text-2xl`}
                   key={shopList.id}
                 >
                   <p
@@ -49,7 +46,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                     onBlur={(event) => {
                       event.currentTarget.contentEditable = 'false';
                       if (!event.currentTarget.textContent) return;
-                      handleUpdateListName(event.currentTarget.textContent, shopList.id);
+                      handleUpdateListName(event.currentTarget.textContent, shopList.id, setCurrentShopLists);
                     }}
                     suppressContentEditableWarning
                     className="break-word mt-[5px] max-w-full overflow-hidden whitespace-normal text-wrap"
@@ -61,7 +58,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
                     alt="delete icon"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteList(shopList.id);
+                      deleteListWithConfirmation(shopList.id, shopLists, setCurrentShopLists, activeShopListId, setActiveShopListId);
                     }}
                   />
                 </li>
@@ -71,7 +68,7 @@ export default function ShopListSidebar({ shopLists, setMenuOpen, setActiveShopL
             <h2 className="text-center text-xl lg:text-2xl">Brak list</h2>
           )}
         </ul>
-        <button onClick={handleAddList} className="mb-[30px] rounded-[16px] bg-accent-blue px-[20px] py-[5px] text-xl text-white shadow-xl lg:mb-[40px] lg:text-2xl">
+        <button onClick={() => handleAddList({ setCurrentShopLists, setActiveShopListId })} className="mb-[30px] rounded-[16px] bg-accent-blue px-[20px] py-[5px] text-xl text-white shadow-xl lg:mb-[40px] lg:text-2xl">
           <p className="mt-[5px]">Dodaj listę</p>
         </button>
       </div>

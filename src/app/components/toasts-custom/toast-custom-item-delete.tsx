@@ -1,24 +1,22 @@
-import { handleDeleteAndSetActiveList } from '../../utils/list-operations';
-import { TOAST_CUSTOM_MESSAGES } from '@/config/constans';
-import { ShoppingList } from '@/lib/db';
+import { TOAST_CUSTOM_MESSAGES, TOAST_MESSAGES } from '@/config/constans';
+import { deleteListItem } from '@/actions/actions';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { Item } from '@/lib/db';
 
-type toastCustomDeleteProps = {
+type ToastCustomItemDeleteProps = {
   toastId: string;
-  listId: number;
-  currentShopLists: ShoppingList[];
-  setCurrentShopLists: React.Dispatch<React.SetStateAction<ShoppingList[]>>;
-  activeShopListId: number | undefined;
-  setActiveShopListId: React.Dispatch<React.SetStateAction<number | undefined>>;
+  itemId: number;
+  setCurrentShopListItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  setIsToastDeleteDismissed: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function toastCustomDelete({ toastId, listId, currentShopLists, setCurrentShopLists, activeShopListId, setActiveShopListId }: toastCustomDeleteProps) {
+export default function toastCustomItemDelete({ toastId, itemId, setCurrentShopListItems, setIsToastDeleteDismissed }: ToastCustomItemDeleteProps) {
   return new Promise<{ confirmed: boolean; dontAskAgain: boolean }>((resolve) => {
     toast(
       (t) => (
         <span>
-          <p className="text-lg">{TOAST_CUSTOM_MESSAGES.DELETE_LIST}</p>
+          <p className="text-lg">{TOAST_CUSTOM_MESSAGES.DELETE_ITEM}</p>
           <div className="mb-[5px] flex items-center gap-[5px]">
             <button
               className="w-full rounded-[16px] bg-accent-red px-3 pb-1 pt-2 text-white"
@@ -53,12 +51,19 @@ export default function toastCustomDelete({ toastId, listId, currentShopLists, s
       ),
       { id: toastId },
     );
-  }).then(({ confirmed, dontAskAgain }) => {
+  }).then(async ({ confirmed, dontAskAgain }) => {
     if (confirmed) {
       if (dontAskAgain) {
         Cookies.set('toast-delete-dismissed', '1');
+        setIsToastDeleteDismissed(true);
       }
-      return handleDeleteAndSetActiveList(listId, currentShopLists, setCurrentShopLists, activeShopListId, setActiveShopListId);
+      const deletedListItem = await deleteListItem(itemId);
+      if (deletedListItem) {
+        setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedListItem.id));
+        toast.success(TOAST_MESSAGES.SUCCESS_DELETE_ITEM);
+      } else {
+        toast.error(TOAST_MESSAGES.ERROR);
+      }
     }
   });
 }
