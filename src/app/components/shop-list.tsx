@@ -2,7 +2,7 @@
 import { activeShopListIdAtom, shopListItemsAtom, shopListsAtom } from '@/store/atoms/shop-lists';
 import { fetchCurrentListItems } from '@/actions/actions';
 import { handleAddItem } from '../utils/list-operations';
-import { TOAST_MESSAGES } from '@/config/constans';
+import { TOAST_MESSAGES } from '@/config/constants';
 import { useAtom, useAtomValue } from 'jotai';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';

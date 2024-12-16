@@ -17,8 +17,7 @@ const itemSchema = z.object({
   createdAt: z.date(),
 });
 
-const handleError = (error: unknown, context: string) => {
-  console.error(`${context}:`, error);
+const handleZodError = (error: unknown) => {
   if (error instanceof z.ZodError) {
     console.error('Validation errors:', error.errors);
   }
@@ -33,7 +32,7 @@ export const fetchShopLists = async (): Promise<ShoppingList[]> => {
     });
     return shoppingListSchema.array().parse(shopLists);
   } catch (e) {
-    handleError(e, 'fetch shopping lists');
+    handleZodError(e);
     throw new Error('Failed to fetch shopping lists');
   }
 };
@@ -50,7 +49,7 @@ export const fetchLastActiveShopListItems = async (listId: number): Promise<Item
     });
     return itemSchema.array().parse(lastActiveShopListItems);
   } catch (e) {
-    handleError(e, 'fetch first fetched shop list items');
+    handleZodError(e);
     throw new Error('Failed to fetch first fetched shop list items');
   }
 };
@@ -67,7 +66,7 @@ export const fetchCurrentListItems = async (id: number | undefined): Promise<Ite
     });
     return itemSchema.array().parse(currentListItems);
   } catch (e) {
-    handleError(e, 'fetch current list items');
+    handleZodError(e);
     throw new Error('Failed to fetch current list items');
   }
 };
@@ -84,8 +83,8 @@ export const updateListName = async (name: string, id: number) => {
     });
     return shoppingListSchema.parse(updatedListName);
   } catch (e) {
-    handleError(e, 'update list name');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to update list name');
   }
 };
 
@@ -101,14 +100,14 @@ export const updateItemName = async (name: string, id: number) => {
     });
     return itemSchema.parse(updatedItem);
   } catch (e) {
-    handleError(e, 'update item name');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to update item name');
   }
 };
 
 export const addListItem = async (listId: number | undefined) => {
   try {
-    if (!listId || listId < 0) return;
+    if (!listId || listId < 0) return null;
     const newItem = await prisma.item.create({
       data: {
         name: 'Pomidor',
@@ -117,7 +116,7 @@ export const addListItem = async (listId: number | undefined) => {
     });
     return itemSchema.parse(newItem);
   } catch (e) {
-    handleError(e, 'add list item');
+    handleZodError(e);
     throw new Error('Failed to add list item');
   }
 };
@@ -131,8 +130,8 @@ export const addList = async () => {
     });
     return shoppingListSchema.parse(newList);
   } catch (e) {
-    handleError(e, 'add list');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to add list');
   }
 };
 
@@ -145,13 +144,12 @@ export const deleteList = async (id: number) => {
     });
     return shoppingListSchema.parse(deletedList);
   } catch (e) {
-    handleError(e, 'delete list');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to delete list');
   }
 };
 
 export const deleteListItem = async (id: number | undefined) => {
-  if (!id) return;
   try {
     const deletedItem = await prisma.item.delete({
       where: {
@@ -160,13 +158,12 @@ export const deleteListItem = async (id: number | undefined) => {
     });
     return itemSchema.parse(deletedItem);
   } catch (e) {
-    handleError(e, 'delete item');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to delete item');
   }
 };
 
 export const changeStatusListItem = async (id: number | undefined, status: boolean) => {
-  if (!id) return;
   try {
     const updatedStatusItem = await prisma.item.update({
       where: {
@@ -178,7 +175,7 @@ export const changeStatusListItem = async (id: number | undefined, status: boole
     });
     return itemSchema.parse(updatedStatusItem);
   } catch (e) {
-    handleError(e, 'change status item');
-    return null;
+    handleZodError(e);
+    throw new Error('Failed to change status item');
   }
 };

@@ -1,4 +1,4 @@
-import { TOAST_CUSTOM_MESSAGES, TOAST_MESSAGES } from '@/config/constans';
+import { TOAST_CUSTOM_MESSAGES, TOAST_MESSAGES } from '@/config/constants';
 import { deleteListItem } from '@/actions/actions';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';

@@ -1,11 +1,8 @@
-import { TOAST_CUSTOM_MESSAGES } from '@/config/constans';
+import { TOAST_CUSTOM_MESSAGES } from '@/config/constants';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 
-type toastCustomAddProps = {
-  id: string;
-};
-export default function toastCustomAdd({ id }: toastCustomAddProps) {
+export default function toastCustomAdd({ id }: { id: string }) {
   toast(
     (t) => (
       <span>

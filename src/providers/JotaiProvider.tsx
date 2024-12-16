@@ -3,7 +3,6 @@ import { activeShopListIdAtom, shopListItemsAtom, shopListsAtom } from '@/store/
 import { toastAddDismissedAtom, toastDeleteDismissedAtom } from '@/store/atoms/toast';
 import { Item, ShoppingList } from '@prisma/client';
 import { useHydrateAtoms } from 'jotai/utils';
-import { useState, useEffect } from 'react';
 import { Provider } from 'jotai';
 import Cookies from 'js-cookie';
 
@@ -15,8 +14,6 @@ type Props = {
 };
 
 function HydrateAtoms({ shopLists, fetchedActiveShopListId, firstFetchedShopListItems, children }: Props) {
-  const [isHydrated, setIsHydrated] = useState(false);
-
   useHydrateAtoms([
     [shopListsAtom, shopLists],
     [activeShopListIdAtom, fetchedActiveShopListId],
@@ -24,14 +21,6 @@ function HydrateAtoms({ shopLists, fetchedActiveShopListId, firstFetchedShopList
     [toastAddDismissedAtom, Cookies.get('toast-add-dismissed') ? true : false],
     [toastDeleteDismissedAtom, Cookies.get('toast-delete-dismissed') ? true : false],
   ]);
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  if (!isHydrated) {
-    return null;
-  }
 
   return children;
 }

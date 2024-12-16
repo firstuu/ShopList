@@ -2,7 +2,7 @@ import { addList, addListItem, changeStatusListItem, deleteList, deleteListItem,
 import toastCustomItemDelete from '../components/toasts-custom/toast-custom-item-delete';
 import toastCustomDelete from '../components/toasts-custom/toast-custom-delete';
 import toastCustomAdd from '../components/toasts-custom/toast-custom-add';
-import { TOAST_MESSAGES } from '@/config/constans';
+import { TOAST_MESSAGES } from '@/config/constants';
 import { Item, ShoppingList } from '@/lib/db';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
@@ -23,15 +23,16 @@ export const handleAddItem = async ({ activeShopListId, setCurrentShopListItems 
 };
 
 export const handleAddList = async ({ setCurrentShopLists, setActiveShopListId }: { setCurrentShopLists: React.Dispatch<React.SetStateAction<ShoppingList[]>>; setActiveShopListId: React.Dispatch<React.SetStateAction<number | undefined>> }) => {
-  const newList = await addList();
-  if (newList) {
+  try {
+    const newList = await addList();
     setCurrentShopLists((prevItems: ShoppingList[]) => [...prevItems, newList]);
     setActiveShopListId(newList.id);
     toast.success(TOAST_MESSAGES.SUCCESS_ADD_LIST, { id: 'add-list' });
     if (!Cookies.get('toast-add-dismissed')) {
       toastCustomAdd({ id: 'add-list-info' });
     }
-  } else {
+  } catch (e) {
+    console.error('Error adding list', e);
     toast.error(TOAST_MESSAGES.ERROR, { id: 'add-list-error' });
   }
 };
@@ -43,8 +44,8 @@ export const handleDeleteAndSetActiveList = async (
   activeShopListId: number | undefined,
   setActiveShopListId: React.Dispatch<React.SetStateAction<number | undefined>>,
 ): Promise<void> => {
-  const deletedList = await deleteList(listId);
-  if (deletedList) {
+  try {
+    const deletedList = await deleteList(listId);
     setCurrentShopLists((prevItems) => prevItems.filter((item) => item.id !== deletedList.id));
     toast.success(TOAST_MESSAGES.SUCCESS_DELETE_LIST, { id: 'delete-list' });
     const currentIndex = currentShopLists.findIndex((list) => list.id === deletedList.id);
@@ -55,7 +56,10 @@ export const handleDeleteAndSetActiveList = async (
     } else if (previousIndex < 0) {
       setActiveShopListId(-1);
     }
-  } else toast.error(TOAST_MESSAGES.ERROR, { id: 'delete-list-error' });
+  } catch (e) {
+    console.error('Error deleting list', e);
+    toast.error(TOAST_MESSAGES.ERROR, { id: 'delete-list-error' });
+  }
 };
 
 export const deleteListWithConfirmation = async (
@@ -89,28 +93,31 @@ export const handleDeleteItem = async (id: number, setCurrentShopListItems: Reac
       setIsToastDeleteDismissed,
     });
   } else {
-    const deletedListItem = await deleteListItem(id);
-    if (deletedListItem) {
+    try {
+      const deletedListItem = await deleteListItem(id);
       setCurrentShopListItems((prevItems) => prevItems.filter((item) => item.id !== deletedListItem.id));
       toast.success(TOAST_MESSAGES.SUCCESS_DELETE_ITEM, { id: 'delete-item' });
-    } else {
+    } catch (e) {
+      console.error('Error deleting item', e);
       toast.error(TOAST_MESSAGES.ERROR, { id: 'delete-item-error' });
     }
   }
 };
 
 export const handleChangeStatusItem = async (id: number, status: boolean, setCurrentShopListItems: React.Dispatch<React.SetStateAction<Item[]>>) => {
-  const updatedItem = await changeStatusListItem(id, status);
-  console.log(updatedItem);
-  if (updatedItem) {
+  try {
+    const updatedItem = await changeStatusListItem(id, status);
     setCurrentShopListItems((prevItems) => prevItems.map((item) => (item.id === updatedItem.id ? updatedItem : item)));
     toast.success(TOAST_MESSAGES.SUCCESS_UPDATE_STATUS, { id: 'status-success' });
-  } else toast.error(TOAST_MESSAGES.ERROR, { id: 'change-item-status-error' });
+  } catch (e) {
+    console.error('Error changing item status', e);
+    toast.error(TOAST_MESSAGES.ERROR, { id: 'change-item-status-error' });
+  }
 };
 
 export const handleUpdateListName = async (name: string, id: number, setCurrentShopLists: React.Dispatch<React.SetStateAction<ShoppingList[]>>) => {
-  const updatedItem = await updateListName(name, id);
-  if (updatedItem) {
+  try {
+    const updatedItem = await updateListName(name, id);
     setCurrentShopLists((prevItems) => {
       return prevItems.map((item) => {
         if (item.id === updatedItem.id) {
@@ -120,12 +127,15 @@ export const handleUpdateListName = async (name: string, id: number, setCurrentS
       });
     });
     toast.success(TOAST_MESSAGES.SUCCESS_UPDATE_NAME, { id: 'list-name-change' });
-  } else toast.error(TOAST_MESSAGES.ERROR_UPDATE_NAME, { id: 'change-list-name-error' });
+  } catch (e) {
+    console.error('Error updating list name', e);
+    toast.error(TOAST_MESSAGES.ERROR, { id: 'change-list-name-error' });
+  }
 };
 
 export const handleUpdateItemName = async (name: string, id: number, setCurrentShopListItems: React.Dispatch<React.SetStateAction<Item[]>>) => {
-  const updatedItem = await updateItemName(name, id);
-  if (updatedItem) {
+  try {
+    const updatedItem = await updateItemName(name, id);
     setCurrentShopListItems((prevItems) => {
       return prevItems.map((item) => {
         if (item.id === updatedItem.id) {
@@ -135,5 +145,8 @@ export const handleUpdateItemName = async (name: string, id: number, setCurrentS
       });
     });
     toast.success(TOAST_MESSAGES.SUCCESS_UPDATE_NAME, { id: 'item-name-change' });
-  } else toast.error(TOAST_MESSAGES.ERROR_UPDATE_NAME, { id: 'change-item-name-error' });
+  } catch (e) {
+    console.error('Error updating item name', e);
+    toast.error(TOAST_MESSAGES.ERROR, { id: 'change-item-name-error' });
+  }
 };

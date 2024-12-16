@@ -16,11 +16,8 @@ export default function ShopListSidebar({ setMenuOpen }: { setMenuOpen?: React.D
     if (!activeShopListId && shopLists && shopLists.length > 0) {
       setActiveShopListId(shopLists[0].id);
     }
-  }, [activeShopListId, setActiveShopListId, shopLists]);
-
-  useEffect(() => {
     if (activeShopListId) Cookies.set('last-active-shopping-list', activeShopListId.toString());
-  }, [activeShopListId]);
+  }, [activeShopListId, setActiveShopListId, shopLists]);
 
   return (
     <div className="mx-auto h-full w-full rounded-[26px] bg-secondary py-[30px] shadow-md lg:min-w-[344px] lg:max-w-[344px] lg:py-[40px]">

@@ -15,23 +15,21 @@ async function getLastActiveShoppingListId(shopListFetched: ShoppingList[]) {
 
 export default async function Home() {
   try {
-    const shopListFetched = await fetchShopLists();
-    const lastActiveShoppingListId = await getLastActiveShoppingListId(shopListFetched);
+    const shopListsFetched = await fetchShopLists();
+    const lastActiveShoppingListId = await getLastActiveShoppingListId(shopListsFetched);
     const lastActiveShoppingListItems: Item[] = lastActiveShoppingListId > 0 ? await fetchLastActiveShopListItems(lastActiveShoppingListId) : [];
     return (
-      <JotaiProvider shopLists={shopListFetched} fetchedActiveShopListId={lastActiveShoppingListId} firstFetchedShopListItems={lastActiveShoppingListItems}>
-        <>
-          <Navbar />
-          <div className="mx-auto h-[calc(100dvh_-_60px)] max-w-8xl lg:h-[calc(100dvh_-_90px)] lg:px-[30px] lg:py-[70px]">
-            <div className="h-full lg:flex lg:gap-[45px]">
-              <div className="hidden lg:block">
-                <ShopListSidebar />
-              </div>
-              <ShopList />
+      <JotaiProvider shopLists={shopListsFetched} fetchedActiveShopListId={lastActiveShoppingListId} firstFetchedShopListItems={lastActiveShoppingListItems}>
+        <Navbar />
+        <div className="mx-auto h-[calc(100dvh_-_60px)] max-w-8xl lg:h-[calc(100dvh_-_90px)] lg:px-[30px] lg:py-[70px]">
+          <div className="h-full lg:flex lg:gap-[45px]">
+            <div className="hidden lg:block">
+              <ShopListSidebar />
             </div>
-            <Toaster position="bottom-right" />
+            <ShopList />
           </div>
-        </>
+          <Toaster position="bottom-right" />
+        </div>
       </JotaiProvider>
     );
   } catch (error) {
