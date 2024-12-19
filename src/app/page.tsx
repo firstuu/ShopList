@@ -36,6 +36,6 @@ export default async function Home() {
     );
   } catch (error) {
     console.error('Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później:', error);
-    return <div className="mx-auto w-fit pt-20 lg:pt-40">Błąd podczas pobierania danych. Spróbuj ponownie później.</div>;
+    return <div className="mx-auto w-fit pt-20 lg:pt-40">Error loading data. Try again later.</div>;
   }
 }

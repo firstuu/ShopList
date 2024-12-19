@@ -21,7 +21,7 @@ export default function ShopListSidebar({ setMenuOpen }: { setMenuOpen?: React.D
 
   return (
     <div className="mx-auto h-full w-full rounded-[26px] bg-secondary py-[30px] shadow-md lg:min-w-[344px] lg:max-w-[344px] lg:py-[40px]">
-      <h2 className="text-center text-2xl lg:text-3xl">Listy zakupowe</h2>
+      <h2 className="text-center text-2xl lg:text-3xl">Shopping lists</h2>
       <div className="flex h-full flex-col items-center justify-between">
         <ul className="my-[45px] w-full space-y-[20px] overflow-y-auto px-[25px]">
           {shopLists && shopLists.length > 0 ? (
@@ -62,11 +62,11 @@ export default function ShopListSidebar({ setMenuOpen }: { setMenuOpen?: React.D
               );
             })
           ) : (
-            <h2 className="text-center text-xl lg:text-2xl">Brak list</h2>
+            <h2 className="text-center text-xl lg:text-2xl">No lists</h2>
           )}
         </ul>
         <button onClick={() => handleAddList({ setCurrentShopLists, setActiveShopListId })} className="mb-[30px] rounded-[16px] bg-accent-blue px-[20px] py-[5px] text-xl text-white shadow-xl lg:mb-[40px] lg:text-2xl">
-          <p className="mt-[5px]">Dodaj listę</p>
+          <p className="mt-[5px]">Add list</p>
         </button>
       </div>
     </div>

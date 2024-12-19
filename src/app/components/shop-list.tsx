@@ -23,7 +23,7 @@ export default function ShopList() {
         const items = await fetchCurrentListItems(activeShopListId);
         setCurrentShopListItems(items);
       } catch (e) {
-        console.error(`Nie udało sie pobrać przedmiotów dla ${activeShopListId}`, e);
+        console.error(`Failed to fetch items for ${activeShopListId}`, e);
         toast.error(TOAST_MESSAGES.ERROR_FETCH_LIST_ITEMS);
       }
     };
@@ -32,7 +32,7 @@ export default function ShopList() {
 
   return (
     <div className="flex h-full w-full max-w-full flex-col overflow-hidden bg-secondary pt-[30px] shadow-md lg:rounded-[26px] lg:pt-[40px]">
-      <h2 className={`text-center text-2xl lg:text-3xl`}>{currentShopListItems.length > 0 ? shopListName : 'Brak przedmiotów na liście'}</h2>
+      <h2 className={`text-center text-2xl lg:text-3xl`}>{currentShopListItems.length > 0 ? shopListName : 'Empty list'}</h2>
       <div className="mt-[25px] flex flex-grow flex-col gap-[20px] overflow-y-auto lg:mt-[40px]">
         {currentShopListItems?.map((item: Item) => {
           return <ItemBar item={item} key={item.id} />;
@@ -41,7 +41,7 @@ export default function ShopList() {
       <div className="my-[30px] self-center lg:my-[40px]">
         <button className="self-center rounded-[16px] bg-accent-blue px-[20px] py-[5px] text-xl text-white shadow-xl lg:text-2xl">
           <p className="mt-[5px]" onClick={() => handleAddItem({ activeShopListId, setCurrentShopListItems })}>
-            Dodaj przedmiot
+            Add item
           </p>
         </button>
       </div>

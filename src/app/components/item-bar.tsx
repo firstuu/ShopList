@@ -32,7 +32,7 @@ export default function ItemBar({ item }: { item: Item }) {
         </p>
         <div className="flex items-center gap-[10px] lg:gap-[20px]">
           <button className="h-[30px] w-[30px] bg-accent-red shadow-xl lg:h-auto lg:w-auto lg:px-[20px] lg:py-[6px]" onClick={() => handleDeleteItem(item.id, setCurrentShopListItems, setIsToastDeleteDismissed)}>
-            <p className="mt-[5px] hidden lg:block">usuń</p>
+            <p className="mt-[5px] hidden lg:block">delete</p>
             <div className="lg:hidden">
               <Image src={TrashIcon} alt="delete" />
             </div>
@@ -41,7 +41,7 @@ export default function ItemBar({ item }: { item: Item }) {
             className={`${item.status ? 'bg-primary' : 'bg-accent-green'} flex h-[30px] w-[30px] items-center justify-center shadow-xl lg:h-auto lg:w-auto lg:px-[20px] lg:py-[6px]`}
             onClick={() => handleChangeStatusItem(item.id, !item.status, setCurrentShopListItems)}
           >
-            <p className="mt-[5px] hidden lg:block">{item.status ? 'Przywróć' : 'Kupione'}</p>
+            <p className="mt-[5px] hidden lg:block">{item.status ? 'Restore' : 'Bought'}</p>
             <div className="lg:hidden"> {item.status ? <Image src={RevertIcon} alt="revert" /> : <Image src={DoneIcon} alt="Done" />}</div>
           </button>
         </div>

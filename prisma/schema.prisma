@@ -16,7 +16,7 @@ datasource db {
 model ShoppingList {
   id        Int      @id @default(autoincrement())
   name      String
-  items     Item[] // Relacja jeden-do-wielu (jedna lista, wiele przedmiotów)
+  items     Item[] // One-to-many relation (one list, many items)
   createdAt DateTime @default(now())
 }
 
@@ -24,7 +24,7 @@ model Item {
   id        Int          @id @default(autoincrement())
   name      String
   status    Boolean      @default(false)
-  listId    Int // Klucz obcy do ShoppingList
+  listId    Int // Foreign key to ShoppingList
   list      ShoppingList @relation(fields: [listId], references: [id], onDelete: Cascade)
   createdAt DateTime     @default(now())
 }

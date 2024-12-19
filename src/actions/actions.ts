@@ -110,7 +110,7 @@ export const addListItem = async (listId: number | undefined) => {
     if (!listId || listId < 0) return null;
     const newItem = await prisma.item.create({
       data: {
-        name: 'Pomidor',
+        name: 'New item',
         listId: listId,
       },
     });
@@ -125,7 +125,7 @@ export const addList = async () => {
   try {
     const newList = await prisma.shoppingList.create({
       data: {
-        name: 'Nowa lista',
+        name: 'New list',
       },
     });
     return shoppingListSchema.parse(newList);

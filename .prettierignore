@@ -1,4 +1,3 @@
-# Ignoruj pliki i foldery, które nie powinny być formatowane
 node_modules
 build
 dist

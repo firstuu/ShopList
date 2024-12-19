@@ -10,7 +10,7 @@ const LuckiestGuy = Luckiest_Guy({
 
 export const metadata: Metadata = {
   title: 'ShopList',
-  description: 'Twoje listy zakupowe w jednym miejscu!',
+  description: 'Your shopping lists in one place!',
 };
 
 export default function RootLayout({
