@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchLastActiveShopListItems, fetchShopLists } from '@/actions/actions';
 import ShopListSidebar from './components/shop-list-sidebar';
 import JotaiProvider from '@/providers/JotaiProvider';
