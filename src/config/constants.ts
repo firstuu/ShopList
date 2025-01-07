@@ -16,7 +16,7 @@ export const TOAST_CUSTOM_MESSAGES = {
   ADD: 'Double click on the name to change it',
   DELETE_LIST: 'Are you sure you want to delete this list?',
   DELETE_ITEM: 'Are you sure you want to delete this item?',
-  DELETE_DONT_ASK_AGAIN: "Don't ask again",
+  DELETE_DONT_ASK_AGAIN: "Yes, Don't ask again",
   DELETE_CONFIRM: 'Yes',
   DELETE_CANCEL: 'No',
   ADD_CONFIRM: 'Got it!',
