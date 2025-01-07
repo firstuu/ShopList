@@ -95,7 +95,6 @@ The project leverages Next.js 15's latest features:
 ### 1. Real-time List Management
 
 - Server actions for CRUD operations
-- Optimistic updates
 - Toast notifications
 - Error handling
 
